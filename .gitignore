@@ -1,0 +1,9 @@
+# Ignore these directories
+ffhq_256/
+ddpm_results/
+recursive_outputs/
+memtest_results/
+__pycache__/
+
+# Ignore this file
+model_objects.pkl
