@@ -1,53 +1,28 @@
 import pandas as pd
-import os
-from PIL import Image
-import math
 
-# CONFIG
-input_csv = "top_2_percent_similarity_analysis.csv"
-image_dir = "celebahq_256/celeba_hq_256"  # Directory where images are stored
-output_csv = "unique_high_fidelity_candidates.csv"
-output_collage = "unique_high_fidelity_collage.jpg"
+# Load your CSV (assuming it's named 'merged_output.csv')
+df = pd.read_csv("merged_output.csv")
 
-# Thresholds to define uniqueness
-phash_threshold = 10
-clip_similarity_threshold = 0.90
+# List of corruption parts to check
+parts = ["top", "bottom", "left", "right", "center", "center_clear"]
 
-# Load the similarity results
-df = pd.read_csv(input_csv)
+# Create a DataFrame to collect violations
+worse_than_all_noise = pd.DataFrame()
 
-# Filter for unique high-fidelity images
-unique_df = df[
-    (df["phash_distance"] >= phash_threshold) &
-    (df["clip_cosine_similarity"] < clip_similarity_threshold)
-]
+# Check for each part
+for part in parts:
+    mask = df[part] > df["all_noise"]
+    if mask.any():
+        temp = df[mask].copy()
+        temp["worse_part"] = part
+        temp["worse_value"] = temp[part]
+        temp["difference"] = temp[part] - temp["all_noise"]
+        worse_than_all_noise = pd.concat([worse_than_all_noise, temp], ignore_index=True)
 
-# Save filtered results
-unique_df.to_csv(output_csv, index=False)
-print(f"Saved {len(unique_df)} unique high-fidelity samples to '{output_csv}'")
+# Sort by the difference (descending: biggest violations first)
+sorted_df = worse_than_all_noise.sort_values(by="difference", ascending=False)
 
-# Create collage of filtered images
-image_paths = [
-    os.path.join(image_dir, name)
-    for name in unique_df["image_name"]
-    if os.path.exists(os.path.join(image_dir, name))
-]
+# Save the result to a CSV file
+sorted_df[["image_name", "worse_part", "worse_value", "all_noise", "difference"]].to_csv("worse_than_all_noise_sorted.csv", index=False)
 
-images = [Image.open(p).convert("RGB") for p in image_paths]
-
-if images:
-    img_width, img_height = images[0].size
-    cols = math.ceil(math.sqrt(len(images)))
-    rows = math.ceil(len(images) / cols)
-
-    collage = Image.new("RGB", (cols * img_width, rows * img_height), color=(255, 255, 255))
-
-    for idx, img in enumerate(images):
-        x = (idx % cols) * img_width
-        y = (idx // cols) * img_height
-        collage.paste(img, (x, y))
-
-    collage.save(output_collage)
-    print(f"Collage of {len(images)} images saved to '{output_collage}'")
-else:
-    print("No images found to build collage.")
+print("Saved sorted results to 'worse_than_all_noise_sorted.csv'")

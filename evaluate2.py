@@ -17,7 +17,7 @@ STEPS = 1000
 SEED = 42
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 RESIZE_SIZE = 256
-NOISE_STEPS = [400, 500, 600]
+NOISE_STEPS = [330, 380, 420]
 
 # ------------------------------
 # SETUP
