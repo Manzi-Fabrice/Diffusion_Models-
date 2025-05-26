@@ -10,11 +10,11 @@ import lpips
 # CONFIG
 # ------------------------------
 SAVE_DIR = "ddpm_inversion_results"
-NOISE_STEP = 300  # Recommended starting point for CelebA-HQ
+NOISE_STEP = 400  # Recommended starting point for CelebA-HQ
 STEPS = 1000
 SEED = 42
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-IMAGE_PATH = "celebahq_256/celeba_hq_256/00000.jpg" 
+IMAGE_PATH = "celebahq_256/celeba_hq_256/00045.jpg" 
 RESIZE_SIZE = 256
 
 # ------------------------------
