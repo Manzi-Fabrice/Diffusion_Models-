@@ -3,7 +3,7 @@ import os
 from PIL import Image
 
 # -------- SETTINGS --------
-csv_path = "top_resistant_images.csv"
+csv_path = "overlapping_memorized_images.csv"
 base_dir = "recon_vis"
 noise_steps = [330, 380, 400, 420, 500, 600]  # Starting from 330
 output_file = "resistant_collage.png"
