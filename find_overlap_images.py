@@ -2,8 +2,8 @@ import pandas as pd
 
 # -------- SETTINGS --------
 csv_a = "steep_local_drop_images.csv"      # File with local drop images
-csv_b = "top_resistant_images.csv"         # File with globally resistant images
-output_file = "overlapping_memorized_images.csv"
+csv_b = "top_fragile_images.csv"         # File with globally resistant images
+output_file = "fragile_overlapping_memorized_images.csv"
 
 # -------- LOAD DATA --------
 df_a = pd.read_csv(csv_a)
